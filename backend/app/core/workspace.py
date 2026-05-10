@@ -24,10 +24,10 @@ class WorkspaceManager:
     def list_files(self, user_id: str, subdir: str = "") -> list[dict]:
         workspace = self.get_workspace(user_id)
         target = workspace / subdir if subdir else workspace
-        if not target.exists() or not target.is_dir():
-            return []
         if not str(target.resolve()).startswith(str(workspace.resolve())):
             raise PermissionError("Access denied: path traversal detected")
+        if not target.exists() or not target.is_dir():
+            return []
         result = []
         for entry in sorted(target.iterdir()):
             stat = entry.stat()
