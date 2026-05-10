@@ -97,6 +97,8 @@ class AIAgent:
     async def _call_llm(self, messages: list[dict]) -> list[dict]:
         if settings.ai_provider == "ollama":
             return await self._call_ollama(messages)
+        if settings.ai_provider == "groq":
+            return await self._call_groq(messages)
         return await self._call_openai(messages)
 
     async def _call_openai(self, messages: list[dict]) -> list[dict]:
@@ -107,6 +109,33 @@ class AIAgent:
             resp = await client.post(
                 "https://api.openai.com/v1/chat/completions",
                 headers={"Authorization": f"Bearer {settings.openai_api_key}"},
+                json={
+                    "model": settings.ai_model,
+                    "messages": messages,
+                    "temperature": 0.1,
+                    "response_format": {"type": "json_object"},
+                },
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            content = data["choices"][0]["message"]["content"]
+            parsed = json.loads(content)
+            if isinstance(parsed, list):
+                return parsed
+            if isinstance(parsed, dict) and "steps" in parsed:
+                return parsed["steps"]
+            if isinstance(parsed, dict) and "actions" in parsed:
+                return parsed["actions"]
+            return [parsed]
+
+    async def _call_groq(self, messages: list[dict]) -> list[dict]:
+        if not settings.groq_api_key:
+            return self._fallback_plan(messages)
+
+        async with httpx.AsyncClient(timeout=60) as client:
+            resp = await client.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {settings.groq_api_key}"},
                 json={
                     "model": settings.ai_model,
                     "messages": messages,
@@ -220,7 +249,7 @@ class AIAgent:
             {
                 "action": "done",
                 "params": {
-                    "summary": "No AI provider configured. Set OPENAI_API_KEY or configure Ollama."
+                    "summary": "No AI provider configured. Set GROQ_API_KEY, OPENAI_API_KEY, or configure Ollama."
                 },
                 "description": "AI provider not available",
             }

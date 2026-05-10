@@ -39,6 +39,9 @@ android/local.properties
 *.apk
 *.aab
 
+# Builds output
+builds/
+
 # Playwright
 playwright-report/
 test-results/

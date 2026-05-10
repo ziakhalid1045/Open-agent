@@ -27,8 +27,9 @@ class Settings(BaseSettings):
     # AI
     openai_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"
-    ai_provider: str = "openai"
-    ai_model: str = "gpt-4o"
+    groq_api_key: str = ""
+    ai_provider: str = "groq"
+    ai_model: str = "llama-3.3-70b-versatile"
 
     # Browser
     headless: bool = True

@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
@@ -103,7 +103,7 @@ fun TaskCard(task: TaskResponse, onRefresh: () -> Unit) {
                 Icon(
                     imageVector = when (task.status) {
                         "done" -> Icons.Default.CheckCircle
-                        "failed" -> Icons.Default.Error
+                        "failed" -> Icons.Default.Close
                         "running" -> Icons.Default.PlayArrow
                         else -> Icons.Default.HourglassEmpty
                     },

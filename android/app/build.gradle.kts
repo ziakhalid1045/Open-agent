@@ -14,7 +14,21 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
+        // Default: local development via Android emulator
         buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8000\"")
+    }
+
+    // Build types: debug (local) and release (production server)
+    buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8000\"")
+        }
+        release {
+            isMinifyEnabled = false
+            // Replace with your HuggingFace Space URL after deployment
+            // e.g. "https://YOUR-USERNAME-open-agents.hf.space"
+            buildConfigField("String", "BASE_URL", "\"https://YOUR-USERNAME-open-agents.hf.space\"")
+        }
     }
 
     buildFeatures {
@@ -41,6 +55,7 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.02.00")
     implementation(composeBom)
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.activity:activity-compose:1.8.2")

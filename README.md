@@ -22,7 +22,7 @@ AI-powered autonomous browser agent system. Natural language commands drive a he
 |-----------|------|-------------|
 | **Backend** | FastAPI + Python | REST API server with auth, task execution, file management |
 | **Browser Engine** | Playwright + Chromium | Headless browser with multi-tab, DOM control, screenshots |
-| **AI Agent** | OpenAI / Ollama | Converts natural language to browser action sequences |
+| **AI Agent** | Groq / OpenAI / Ollama | Converts natural language to browser action sequences |
 | **Data System** | SQLite + encrypted storage | Isolated user workspaces, persistent memory |
 | **Android App** | Kotlin + Jetpack Compose | Chat UI, remote browser viewer, file manager, task tracker |
 
@@ -155,9 +155,22 @@ curl http://localhost:8000/api/v1/files/download/uploads/document.pdf \
 
 ## AI Providers
 
-### OpenAI (Cloud)
+### Groq (Free — Recommended)
 
-Set `AI_PROVIDER=openai` and `OPENAI_API_KEY=sk-...` in `.env`.
+Groq provides free API access with fast inference. Sign up at [console.groq.com](https://console.groq.com).
+
+```bash
+# Set in .env
+OPEN_AGENTS_AI_PROVIDER=groq
+OPEN_AGENTS_AI_MODEL=llama-3.3-70b-versatile
+OPEN_AGENTS_GROQ_API_KEY=gsk_...
+```
+
+Available free models: `llama-3.3-70b-versatile`, `llama-3.1-8b-instant`, `mixtral-8x7b-32768`, `gemma2-9b-it`
+
+### OpenAI (Paid)
+
+Set `OPEN_AGENTS_AI_PROVIDER=openai` and `OPEN_AGENTS_OPENAI_API_KEY=sk-...` in `.env`.
 
 ### Ollama (Local)
 
@@ -169,19 +182,47 @@ curl -fsSL https://ollama.com/install.sh | sh
 ollama pull llama3
 
 # Set in .env
-AI_PROVIDER=ollama
-AI_MODEL=llama3
-OLLAMA_BASE_URL=http://localhost:11434
+OPEN_AGENTS_AI_PROVIDER=ollama
+OPEN_AGENTS_AI_MODEL=llama3
+OPEN_AGENTS_OLLAMA_BASE_URL=http://localhost:11434
 ```
 
 ## Deployment
 
-### Render (Free)
+### Hugging Face Spaces (Free — Recommended)
+
+Deploy the backend to Hugging Face Spaces using the Docker SDK:
+
+1. Create a free account at [huggingface.co](https://huggingface.co/join)
+2. Create a new Space: Spaces → New Space → Select **Docker** SDK
+3. Clone the Space repo and copy the project files:
+   ```bash
+   git clone https://huggingface.co/spaces/YOUR-USERNAME/open-agents
+   # Copy Dockerfile and backend/ directory into the Space
+   cp -r Dockerfile backend/ open-agents/
+   cd open-agents
+   git add . && git commit -m "Deploy Open Agents" && git push
+   ```
+4. Set secrets in the Space Settings:
+   - `OPEN_AGENTS_SECRET_KEY` (generate with `openssl rand -hex 32`)
+   - `OPEN_AGENTS_GROQ_API_KEY` (your Groq API key)
+   - `OPEN_AGENTS_ENCRYPTION_KEY` (generate with `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`)
+
+Your backend will be live at `https://YOUR-USERNAME-open-agents.hf.space`
+
+### Koyeb (Free)
+
+1. Create a free account at [koyeb.com](https://www.koyeb.com)
+2. Deploy from GitHub → select this repo
+3. Set Dockerfile path to `Dockerfile`
+4. Set environment variables (same as HuggingFace above)
+
+### Render
 
 1. Fork this repo
 2. Connect to [Render](https://render.com)
 3. Create "New Blueprint Instance" → select repo
-4. Set `OPENAI_API_KEY` in environment variables
+4. Set environment variables
 
 ### Railway
 
@@ -193,8 +234,8 @@ OLLAMA_BASE_URL=http://localhost:11434
 
 ```bash
 fly launch --dockerfile backend/Dockerfile
-fly secrets set OPENAI_API_KEY=sk-...
-fly secrets set SECRET_KEY=$(openssl rand -hex 32)
+fly secrets set OPEN_AGENTS_GROQ_API_KEY=gsk_...
+fly secrets set OPEN_AGENTS_SECRET_KEY=$(openssl rand -hex 32)
 fly deploy
 ```
 
@@ -209,11 +250,17 @@ The Android app in `android/` connects to the backend server. Built with Kotlin 
 - **File Manager**: Browse and manage files in your workspace
 - **Task Tracker**: Monitor running and completed tasks
 
-### Setup
+### Pre-built Downloads
+
+- **APK** (direct install): Download `OpenAgents-debug.apk` from Releases
+- **AAB** (Play Store): Download `OpenAgents-release.aab` from Releases
+
+### Build from Source
 
 1. Open `android/` in Android Studio
-2. Set `BASE_URL` in `app/build.gradle.kts` to your server URL
-3. Build and run on device/emulator
+2. Update `BASE_URL` in `app/build.gradle.kts` with your deployed backend URL
+3. Build APK: `./gradlew assembleDebug`
+4. Build AAB: `./gradlew bundleRelease`
 
 ## Project Structure
 
