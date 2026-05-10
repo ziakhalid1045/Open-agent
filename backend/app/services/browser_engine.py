@@ -129,8 +129,8 @@ class BrowserEngine:
         try:
             screenshot_dir = workspace_manager.get_screenshot_dir(user_id)
             path = screenshot_dir / f"{uuid.uuid4()}.png"
-            await page.screenshot(path=str(path), full_page=full_page)
             raw = await page.screenshot(full_page=full_page)
+            path.write_bytes(raw)
             return {
                 "status": "ok",
                 "path": str(path),
@@ -236,7 +236,15 @@ class BrowserEngine:
         ub = await self._get_user_browser(user_id)
         page = self._active_page(ub)
         try:
-            await page.set_input_files(selector, file_path, timeout=settings.browser_timeout)
+            workspace = workspace_manager.get_workspace(user_id)
+            target = (workspace / file_path).resolve()
+            if not str(target).startswith(str(workspace.resolve())):
+                return {"status": "error", "error": "Access denied: invalid file path"}
+            if not target.exists():
+                return {"status": "error", "error": "File not found"}
+            await page.set_input_files(
+                selector, str(target), timeout=settings.browser_timeout
+            )
             return {"status": "ok"}
         except Exception as e:
             return {"status": "error", "error": str(e)}

@@ -26,6 +26,8 @@ class WorkspaceManager:
         target = workspace / subdir if subdir else workspace
         if not target.exists() or not target.is_dir():
             return []
+        if not str(target.resolve()).startswith(str(workspace.resolve())):
+            raise PermissionError("Access denied: path traversal detected")
         result = []
         for entry in sorted(target.iterdir()):
             stat = entry.stat()
