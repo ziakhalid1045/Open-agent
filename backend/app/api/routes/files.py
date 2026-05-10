@@ -29,10 +29,13 @@ async def upload_file(file: UploadFile, user: User = Depends(get_current_user)):
 
 @router.get("/download/{file_path:path}")
 async def download_file(file_path: str, user: User = Depends(get_current_user)):
-    path = file_manager.get_file_path(user.id, file_path)
-    if path is None:
-        raise HTTPException(status_code=404, detail="File not found")
-    return FileResponse(path, filename=path.name)
+    try:
+        path = file_manager.get_file_path(user.id, file_path)
+        if path is None:
+            raise HTTPException(status_code=404, detail="File not found")
+        return FileResponse(path, filename=path.name)
+    except PermissionError:
+        raise HTTPException(status_code=403, detail="Access denied")
 
 
 @router.delete("/{file_path:path}")

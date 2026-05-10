@@ -14,7 +14,8 @@ WORKDIR /app
 # Install Python deps
 COPY pyproject.toml .
 RUN pip install --no-cache-dir pip --upgrade && \
-    pip install --no-cache-dir .
+    pip install --no-cache-dir . && \
+    pip install 'bcrypt==4.1.3'
 
 # Install Playwright browsers
 RUN playwright install chromium && playwright install-deps chromium
