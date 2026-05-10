@@ -37,7 +37,7 @@ ENV OPEN_AGENTS_HOST=0.0.0.0
 ENV OPEN_AGENTS_PORT=7860
 ENV OPEN_AGENTS_HEADLESS=true
 ENV OPEN_AGENTS_WORKSPACE_ROOT=/app/workspaces
-ENV OPEN_AGENTS_DATABASE_URL=sqlite+aiosqlite:///app/open_agents.db
+ENV OPEN_AGENTS_DATABASE_URL=sqlite+aiosqlite:////app/open_agents.db
 
 EXPOSE 7860
 
