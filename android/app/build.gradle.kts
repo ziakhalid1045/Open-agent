@@ -25,9 +25,7 @@ android {
         }
         release {
             isMinifyEnabled = false
-            // Replace with your HuggingFace Space URL after deployment
-            // e.g. "https://YOUR-USERNAME-open-agents.hf.space"
-            buildConfigField("String", "BASE_URL", "\"https://YOUR-USERNAME-open-agents.hf.space\"")
+            buildConfigField("String", "BASE_URL", "\"https://ziaullah102-open-agents.hf.space\"")
         }
     }
 
