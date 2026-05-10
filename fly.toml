@@ -1,0 +1,30 @@
+# Fly.io deployment config
+# Deploy with: fly launch --dockerfile backend/Dockerfile
+
+app = "open-agents"
+primary_region = "iad"
+
+[build]
+  dockerfile = "backend/Dockerfile"
+
+[env]
+  OPEN_AGENTS_HEADLESS = "true"
+  OPEN_AGENTS_DATABASE_URL = "sqlite+aiosqlite:///./data/open_agents.db"
+  OPEN_AGENTS_WORKSPACE_ROOT = "/app/data/workspaces"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
+
+[mounts]
+  source = "agent_data"
+  destination = "/app/data"

@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - OPEN_AGENTS_SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - OPEN_AGENTS_DATABASE_URL=sqlite+aiosqlite:///./data/open_agents.db
+      - OPEN_AGENTS_WORKSPACE_ROOT=/app/data/workspaces
+      - OPEN_AGENTS_HEADLESS=true
+      - OPEN_AGENTS_AI_PROVIDER=${AI_PROVIDER:-openai}
+      - OPEN_AGENTS_AI_MODEL=${AI_MODEL:-gpt-4o}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+    volumes:
+      - agent-data:/app/data
+    restart: unless-stopped
+    depends_on:
+      - ollama
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+    profiles:
+      - local-ai
+
+volumes:
+  agent-data:
+  ollama-data:

@@ -1,0 +1,46 @@
+[project]
+name = "open-agents"
+version = "1.0.0"
+description = "AI-powered autonomous browser agent system"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0",
+    "playwright>=1.42.0",
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.1.0",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "python-multipart>=0.0.9",
+    "aiosqlite>=0.19.0",
+    "sqlalchemy[asyncio]>=2.0.0",
+    "cryptography>=42.0.0",
+    "httpx>=0.27.0",
+    "websockets>=12.0",
+    "openai>=1.12.0",
+    "aiofiles>=23.2.0",
+    "email-validator>=2.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.3.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/ai_agent.py" = ["E501"]
+"**/browser_engine.py" = ["E501"]
+"**/task_executor.py" = ["E501"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
