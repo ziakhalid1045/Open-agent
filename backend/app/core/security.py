@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 from base64 import b64decode, b64encode
 from datetime import datetime, timedelta, timezone
 
@@ -18,9 +17,8 @@ _fernet_key: bytes | None = None
 def _get_fernet() -> Fernet:
     global _fernet_key
     if _fernet_key is None:
-        env_key = os.getenv("ENCRYPTION_KEY")
-        if env_key:
-            _fernet_key = env_key.encode()
+        if settings.encryption_key:
+            _fernet_key = settings.encryption_key.encode()
         else:
             _fernet_key = Fernet.generate_key()
     return Fernet(_fernet_key)

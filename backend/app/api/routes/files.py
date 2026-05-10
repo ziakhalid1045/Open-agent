@@ -12,7 +12,10 @@ router = APIRouter(prefix="/files", tags=["files"])
 
 @router.get("/list")
 async def list_files(subdir: str = "", user: User = Depends(get_current_user)):
-    return {"files": file_manager.list_files(user.id, subdir)}
+    try:
+        return {"files": file_manager.list_files(user.id, subdir)}
+    except PermissionError:
+        raise HTTPException(status_code=403, detail="Access denied")
 
 
 @router.post("/upload")
