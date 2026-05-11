@@ -39,6 +39,16 @@ android/local.properties
 *.apk
 *.aab
 
+# eShort Android Projects
+eshort-app/.gradle/
+eshort-app/build/
+eshort-app/app/build/
+eshort-app/local.properties
+eshort-admin-panel/.gradle/
+eshort-admin-panel/build/
+eshort-admin-panel/app/build/
+eshort-admin-panel/local.properties
+
 # Builds output
 builds/
 

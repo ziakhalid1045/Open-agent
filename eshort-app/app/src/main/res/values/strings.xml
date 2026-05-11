@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">eShort</string>
+    <string name="default_web_client_id">REPLACE_WITH_WEB_CLIENT_ID</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_explore">Explore</string>
+    <string name="tab_create">Create</string>
+    <string name="tab_inbox">Inbox</string>
+    <string name="tab_profile">Profile</string>
+</resources>
